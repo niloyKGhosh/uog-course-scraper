@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
 
-pageUrl = 'https://www.uoguelph.ca/registrar/calendars/undergraduate/current/c12/index.shtml'
+allLinks = []
+pageUrl = 'https://www.uoguelph.ca/registrar/calendars/undergraduate/current/c12/'
 
 coursePage = requests.get(pageUrl)
 coursePgContents = coursePage.content
@@ -14,5 +15,5 @@ for a in courseListDiv:
 
 courseListAnchors.pop(0)
 
-for _ in courseListAnchors:
-    print(_['href'])
+for link in courseListAnchors:
+    allLinks.append(link['href'][2:])
