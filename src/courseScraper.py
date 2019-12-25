@@ -25,7 +25,7 @@ def courseScraper():
         allLinks.append(link['href'][2:])
 
     for link in allLinks:
-        coursePageUrl = 'https://www.uoguelph.ca/registrar/calendars/undergraduate/current/c12/' + link
+        coursePageUrl = pageUrl + link
         page = requests.get(coursePageUrl)
         contents = page.content
         courseSoup = BeautifulSoup(contents, 'html.parser')
