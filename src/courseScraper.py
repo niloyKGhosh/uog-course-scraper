@@ -3,11 +3,11 @@ import requests
 import pandas as pd
 
 def courseScraper():
-    allLinks = []
-    allCourseTitles = []
-    allCourseRestrictions = []
-    allCoursePrerequisites = []
-    allCourseCredits = []
+    allLinks = []   # List to hold all anchor links for all courses
+    allCourseTitles = []    # List to hold all course titles that needs to be transferred to the csv file
+    allCourseRestrictions = []  # List to hold all course restrictions that needs to be transferred to the csv file
+    allCoursePrerequisites = [] # List to hold all course Prerequisites that needs to be transferred to the csv file
+    allCourseCredits = []   # List to hold all course credits that needs to be transferred to the csv file
 
     pageUrl = 'https://www.uoguelph.ca/registrar/calendars/undergraduate/current/c12/'
 
@@ -16,14 +16,17 @@ def courseScraper():
     soup = BeautifulSoup(coursePgContents, 'html.parser')
     courseListDiv = soup.findAll('div', {'class': 'subnav'})
 
+    # Getting all anchor tags from Accounting to Zoology
     for a in courseListDiv:
         courseListAnchors = a.findAll('a', href = True)
 
     courseListAnchors.pop(0)    # Getting rid of index.shtml
 
+    # Getting all the extensions to go from Accounting to Zoology
     for link in courseListAnchors:
         allLinks.append(link['href'][2:])
 
+    # Collecting all the course data from Accounting to Zoology
     for link in allLinks:
         coursePageUrl = pageUrl + link
         page = requests.get(coursePageUrl)
@@ -51,6 +54,7 @@ def courseScraper():
             allCoursePrerequisites.append(prereq)
             allCourseRestrictions.append(restrictions)
     
+    # Sending in the collected data to the csv file
     courseData = pd.DataFrame(
         {'Course Title': allCourseTitles,
         'Course Credit': allCourseCredits,
@@ -58,6 +62,6 @@ def courseScraper():
         'Course Restrictions': allCourseRestrictions
         }
     )
-    courseData.to_csv('courseData.csv')
+    courseData.to_csv('courseData.csv', encoding='utf-8',index=False)
 
 courseScraper()
